@@ -10,13 +10,14 @@ import java.util.ArrayList;
 public class TTTServer {
 
     static private char[][] board = {{' ', ' ', ' '},
-            {' ', ' ', ' '},
-            {' ', ' ', ' '}};
-
+                                    {' ', ' ', ' '},
+                                    {' ', ' ', ' '}};
     static private ServerSocket server; // this is the "door"
     static private DataInputStream  in;
     static private DataOutputStream out;
     static private Socket toclientsocket;
+    static private boolean play = true;
+    static private int moveCount = 0;
 
     public static void main(String[] args) {
 
@@ -42,20 +43,34 @@ public class TTTServer {
                 if (r == 1) { // client goes
                     out.writeChars("NONE");
                 }
-                 else {
+                 else { // server goes
                     int[] move = move();
                     out.writeChars("MOVE" + move[0] + " " + move[1]);
                 }
 
-                double D = in.readDouble();  // read a double from client
-                D = D * D;
-                out.writeDouble(D);        // write the square to the client
+                while (play) {
+                    String response = in.readUTF();
+                    String[] words = response.split(" ");
+                    update(Integer.parseInt(words[0]), Integer.parseInt(words[1]), 'O');
 
+                    int status = checkStatus();
+
+                    int[] move = move();
+                    out.writeChars("MOVE" + move[0] + " " + move[1]);
+
+                }
             }
         }   // end try
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static int checkStatus() {
+        if (moveCount >= 9) {
+            return 0;
+        }
+        return 0;
     }
 
     private static int[] move() {
@@ -73,7 +88,6 @@ public class TTTServer {
         int[] move = {legalMoves.get(r)[0], legalMoves.get(r)[1]};
 
         update(move[0], move[1], 'X');
-
         return move;
     }
 
@@ -86,5 +100,6 @@ public class TTTServer {
         //move is always row-column
         //assumes that board has been checked for open spot
         board[r][c] = m;
+        moveCount++;
     }
 }
