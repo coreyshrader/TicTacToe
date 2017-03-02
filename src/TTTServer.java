@@ -4,7 +4,7 @@
 
 import java.io.*;
 import java.net.*;
-
+import java.util.concurrent.ThreadLocalRandom;
 public class TTTServer {
 
     static char[][] board = {{' ', ' ', ' '},
@@ -18,24 +18,27 @@ public class TTTServer {
 
     public static void main(String[] args) {
 
+
+
         try {    // NOTE - must be within a try-clause or throw exceptions!!!!
 
             printBoard();
 
             server = new ServerSocket(7788);   //listen at the door
-            System.out.println("waiting for connection");
-            toclientsocket = server.accept();   // block UNTIL request received
+            while(true) {
+                System.out.println("waiting for connection");
+                toclientsocket = server.accept();   // block UNTIL request received
 
-            //AT THIS POINT CONNECTION MADE
-            System.out.println("RECEIVED REQUEST");
+                //AT THIS POINT CONNECTION MADE
+                System.out.println("RECEIVED REQUEST");
 
-            in = new DataInputStream(toclientsocket.getInputStream());
-            out = new DataOutputStream(toclientsocket.getOutputStream());
-
-            double D = in.readDouble( );  // read a double from client
-            D = D * D;
-            out.writeDouble(D);		// write the square to the client
-
+                in = new DataInputStream(toclientsocket.getInputStream());
+                out = new DataOutputStream(toclientsocket.getOutputStream());
+                int r = ThreadLocalRandom.current().nextInt(1, 3); //gen number between 1 and 2
+                double D = in.readDouble();  // read a double from client
+                D = D * D;
+                out.writeDouble(D);        // write the square to the client
+            }
         }   // end try
         catch (IOException e) {}
     }
