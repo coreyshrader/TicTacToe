@@ -7,15 +7,20 @@ import java.net.*;
 
 public class TTTServer {
 
+    static char[][] board = {{' ', ' ', ' '},
+            {' ', ' ', ' '},
+            {' ', ' ', ' '}};
+
+    static ServerSocket server; // this is the "door"
+    static DataInputStream  in;
+    static DataOutputStream out;
+    static Socket toclientsocket;
+
     public static void main(String[] args) {
 
-        ServerSocket server; // this is the "door"
-        DataInputStream  in;
-        DataOutputStream out;
-        Socket toclientsocket;
-
-
         try {    // NOTE - must be within a try-clause or throw exceptions!!!!
+
+            printBoard();
 
             server = new ServerSocket(7788);   //listen at the door
             System.out.println("waiting for connection");
@@ -33,5 +38,10 @@ public class TTTServer {
 
         }   // end try
         catch (IOException e) {}
+    }
+
+    public static void printBoard() {
+        System.out.printf("\n  %c  |  %c  |  %c  \n_________________\n  %c  |  %c  |  %c  \n_________________\n  %c  |  %c  |  %c  \n\n",
+                board[0][0],board[0][1],board[0][2],board[1][0],board[1][1],board[1][2],board[2][0],board[2][1],board[2][2]);
     }
 }

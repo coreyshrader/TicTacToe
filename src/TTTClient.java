@@ -7,16 +7,17 @@ import java.net.*;
 
 public class TTTClient {
 
+    static char[][] board = {{' ', ' ', ' '},
+            {' ', ' ', ' '},
+            {' ', ' ', ' '}};
+
+    static DataInputStream instream;
+    static DataOutputStream outstream;
+    static Socket toserversocket;
+    static int   reply;   // for later use
+
     public static void main( String[] args)
     {
-
-        char[][] board = {{' ', ' ', ' '},
-                          {' ', ' ', ' '},
-                          {' ', ' ', ' '}};
-        DataInputStream instream;
-        DataOutputStream outstream;
-        Socket toserversocket;
-        int   reply;   // for later use
 
         System.out.println("CLIENT is attempting connection....");
 
@@ -37,5 +38,10 @@ public class TTTClient {
 
         }
         catch (IOException  e) {};
+    }
+
+    public static void printBoard() {
+        System.out.printf("\n  %c  |  %c  |  %c  \n_________________\n  %c  |  %c  |  %c  \n_________________\n  %c  |  %c  |  %c  \n\n",
+                board[0][0],board[0][1],board[0][2],board[1][0],board[1][1],board[1][2],board[2][0],board[2][1],board[2][2]);
     }
 }
