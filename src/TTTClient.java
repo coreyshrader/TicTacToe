@@ -10,7 +10,9 @@ public class TTTClient {
     public static void main( String[] args)
     {
 
-
+        char[][] board = {{' ', ' ', ' '},
+                          {' ', ' ', ' '},
+                          {' ', ' ', ' '}};
         DataInputStream instream;
         DataOutputStream outstream;
         Socket toserversocket;
