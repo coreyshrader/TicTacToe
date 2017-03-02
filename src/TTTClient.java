@@ -25,10 +25,6 @@ public class TTTClient {
     public static void main( String[] args)
     {
 
-        move();
-
-
-
         System.out.println("CLIENT is attempting connection....");
 
         try {
@@ -46,7 +42,7 @@ public class TTTClient {
                 String[] rA = response.split(" ");
                     int rm = Integer.valueOf(rA[1]);
                     int cm = Integer.valueOf(rA[2]);
-                    localUD(rm, cm, 'X');
+                    update(rm, cm, 'X');
             }
             out.writeChars(move());
             while (play) {
@@ -66,7 +62,7 @@ public class TTTClient {
                 }else{//game didnt server turn
                     int rm = Integer.valueOf(rA[1]);
                     int cm = Integer.valueOf(rA[2]);
-                    localUD(rm, cm, 'X');
+                    update(rm, cm, 'X');
                     out.writeChars(move());
                 }
             }
@@ -79,7 +75,7 @@ public class TTTClient {
                 board[0][0],board[0][1],board[0][2],board[1][0],board[1][1],board[1][2],board[2][0],board[2][1],board[2][2]);
     }
 
-    public static void localUD(int r, int c, char m){// local board update with chosen move
+    public static void update(int r, int c, char m){// local board update with chosen move
         //move is always row-column
         //assumes that board has been checked for open spot
         board[r][c] = m;
