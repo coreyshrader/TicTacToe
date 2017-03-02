@@ -103,7 +103,7 @@ public class TTTClient {
                 if(board[r][c] != ' '){//if board sport taken throw arg
                     System.out.println("Spot not open on board.");
                 }else{ //update board
-                    localUD(r, c, 'O');
+                    update(r, c, 'O');
                     System.out.println("Board updated!");
                     loop = true;
                 }
