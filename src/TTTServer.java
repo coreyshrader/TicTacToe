@@ -10,7 +10,8 @@ public class TTTServer {
     public static void main(String[] args) {
 
         ServerSocket server; // this is the "door"
-
+        DataInputStream  in;
+        DataOutputStream out;
         Socket toclientsocket;
 
 
@@ -21,8 +22,14 @@ public class TTTServer {
             toclientsocket = server.accept();   // block UNTIL request received
 
             //AT THIS POINT CONNECTION MADE
-
             System.out.println("RECEIVED REQUEST");
+
+            in = new DataInputStream(toclientsocket.getInputStream());
+            out = new DataOutputStream(toclientsocket.getOutputStream());
+
+            double D = in.readDouble( );  // read a double from client
+            D = D * D;
+            out.writeDouble(D);		// write the square to the client
 
         }   // end try
         catch (IOException e) {}
