@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class TTTServer {
 
     static private char[][] board = {{' ', ' ', ' '},
-                                    {' ', ' ', ' '},
-                                    {' ', ' ', ' '}};
+            {' ', ' ', ' '},
+            {' ', ' ', ' '}};
     static private ServerSocket server; // this is the "door"
     static private DataInputStream  in;
     static private DataOutputStream out;
@@ -22,8 +22,6 @@ public class TTTServer {
     public static void main(String[] args) {
 
         try {    // NOTE - must be within a try-clause or throw exceptions!!!!
-
-            printBoard();
 
             server = new ServerSocket(7788);   //listen at the door
 
@@ -43,7 +41,7 @@ public class TTTServer {
                 if (r == 1) { // client goes
                     out.writeChars("NONE");
                 }
-                 else { // server goes
+                else { // server goes
                     int[] move = move();
                     out.writeChars("MOVE" + move[0] + " " + move[1]);
                 }
@@ -53,12 +51,31 @@ public class TTTServer {
                     String[] words = response.split(" ");
                     update(Integer.parseInt(words[0]), Integer.parseInt(words[1]), 'O');
 
-                    int status = checkStatus();
+                    if (checkWin()) {
+                        out.writeChars("MOVE 0 0 WIN");
+                        play = false;
+                        continue;
+                    }
+                    else if (checkTie()) {
+                        out.writeChars("MOVE 0 0 TIE");
+                        play = false;
+                        continue;
+                    }
 
                     int[] move = move();
+                    if (checkWin()) {
+                        out.writeChars("MOVE" + move[0] + " " + move[1] + " LOSS");
+                        play = false;
+                        continue;
+                    }
+                    else if (checkTie()) {
+                        out.writeChars("MOVE" + move[0] + " " + move[1] + " TIE");
+                        play = false;
+                        continue;
+                    }
                     out.writeChars("MOVE" + move[0] + " " + move[1]);
-
                 }
+                server.close();
             }
         }   // end try
         catch (IOException e) {
@@ -66,11 +83,24 @@ public class TTTServer {
         }
     }
 
-    private static int checkStatus() {
-        if (moveCount >= 9) {
-            return 0;
+    private static boolean checkWin() {
+        if ((board[0][0] == board[0][1] && board[0][1] == board[0][2] && board[0][2] != ' ')
+                || (board[1][0] == board[1][1] && board[1][1] == board[1][2] && board[1][2] != ' ')
+                || (board[2][0] == board[2][1] && board[2][1] == board[2][2] && board[2][2] != ' ')
+                || (board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[2][0] != ' ')
+                || (board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[2][1] != ' ')
+                || (board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[2][2] != ' ')
+                || (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[2][2] != ' ')
+                || (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[2][0] != ' ')) {
+            return true;
         }
-        return 0;
+        else {
+            return false;
+        }
+    }
+
+    private static boolean checkTie() {
+        return moveCount >= 9;
     }
 
     private static int[] move() {
@@ -89,11 +119,6 @@ public class TTTServer {
 
         update(move[0], move[1], 'X');
         return move;
-    }
-
-    public static void printBoard() {
-        System.out.printf("\n  %c  |  %c  |  %c  \n_________________\n  %c  |  %c  |  %c  \n_________________\n  %c  |  %c  |  %c  \n\n",
-                board[0][0],board[0][1],board[0][2],board[1][0],board[1][1],board[1][2],board[2][0],board[2][1],board[2][2]);
     }
 
     public static void update(int r, int c, char m){// local board update with chosen move
