@@ -13,8 +13,8 @@ public class TTTServer {
             {' ', ' ', ' '},
             {' ', ' ', ' '}};
     static private ServerSocket server; // this is the "door"
-    static private DataInputStream  in;
-    static private DataOutputStream out;
+    static private BufferedReader  in;
+    static private PrintStream out;
     static private Socket toclientsocket;
     static private boolean play = true;
     static private int moveCount = 0;
@@ -27,55 +27,57 @@ public class TTTServer {
 
             while (true) {
 
+                play = true;
+
                 System.out.println("waiting for connection");
                 toclientsocket = server.accept();   // block UNTIL request received
 
                 //AT THIS POINT CONNECTION MADE
                 System.out.println("RECEIVED REQUEST");
 
-                in = new DataInputStream(toclientsocket.getInputStream());
-                out = new DataOutputStream(toclientsocket.getOutputStream());
+                in = new BufferedReader(new InputStreamReader(toclientsocket.getInputStream()));
+                out = new PrintStream(toclientsocket.getOutputStream());
 
                 int r = ThreadLocalRandom.current().nextInt(1, 3); //gen number between 1 and 2
 
                 if (r == 1) { // client goes
-                    out.writeChars("NONE");
+                    out.println("NONE");
                 }
                 else { // server goes
                     int[] move = move();
-                    out.writeChars("MOVE" + move[0] + " " + move[1]);
+                    out.println("MOVE " + move[0] + " " + move[1]);
                 }
 
                 while (play) {
-                    String response = in.readUTF();
+                    String response = in.readLine();
                     String[] words = response.split(" ");
-                    update(Integer.parseInt(words[0]), Integer.parseInt(words[1]), 'O');
+                    update(Integer.parseInt(words[1]), Integer.parseInt(words[2]), 'O');
 
                     if (checkWin()) {
-                        out.writeChars("MOVE 0 0 WIN");
+                        out.println("MOVE 0 0 WIN");
                         play = false;
                         continue;
                     }
                     else if (checkTie()) {
-                        out.writeChars("MOVE 0 0 TIE");
+                        out.println("MOVE 0 0 TIE");
                         play = false;
                         continue;
                     }
 
                     int[] move = move();
                     if (checkWin()) {
-                        out.writeChars("MOVE" + move[0] + " " + move[1] + " LOSS");
+                        out.println("MOVE " + move[0] + " " + move[1] + " LOSS");
                         play = false;
                         continue;
                     }
                     else if (checkTie()) {
-                        out.writeChars("MOVE" + move[0] + " " + move[1] + " TIE");
+                        out.println("MOVE " + move[0] + " " + move[1] + " TIE");
                         play = false;
                         continue;
                     }
-                    out.writeChars("MOVE" + move[0] + " " + move[1]);
+                    out.println("MOVE " + move[0] + " " + move[1]);
                 }
-                server.close();
+                toclientsocket.close();
             }
         }   // end try
         catch (IOException e) {

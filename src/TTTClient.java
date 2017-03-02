@@ -16,8 +16,8 @@ public class TTTClient {
     static char[][] board = {{' ', ' ', ' '},
                              {' ', ' ', ' '},
                              {' ', ' ', ' '}};
-    static DataInputStream in;
-    static DataOutputStream out;
+    static BufferedReader in;
+    static PrintStream out;
     static Socket toserversocket;
     static int   reply;   // for later use
     static boolean play = true;
@@ -32,20 +32,21 @@ public class TTTClient {
             System.out.println("CONNECTION HAS BEEN MADE");
 
 
-            in = new  DataInputStream( toserversocket.getInputStream());
-            out = new DataOutputStream( toserversocket.getOutputStream());
+            in = new BufferedReader( new InputStreamReader(toserversocket.getInputStream()));
+            out = new PrintStream( toserversocket.getOutputStream());
 
             //PrintWriter out = new PrintWriter(outstream, true);
             //BufferedReader in = new BufferedReader(instream);
-            String response = in.readUTF();
-            if(response != "NONE") {
+            String response = in.readLine();
+            if(!response.equals("NONE")) {
                 String[] rA = response.split(" ");
                     int rm = Integer.valueOf(rA[1]);
                     int cm = Integer.valueOf(rA[2]);
                     update(rm, cm, 'X');
             }
-            out.writeChars(move());
+            out.println(move());
             while (play) {
+                response = in.readLine();
                 String[] rA = response.split(" ");
                 if(rA.length > 3){ //if server sent action
                     String check = rA[3];
@@ -63,7 +64,7 @@ public class TTTClient {
                     int rm = Integer.valueOf(rA[1]);
                     int cm = Integer.valueOf(rA[2]);
                     update(rm, cm, 'X');
-                    out.writeChars(move());
+                    out.println(move());
                 }
             }
         }
