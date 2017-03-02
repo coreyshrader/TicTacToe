@@ -15,7 +15,7 @@ public class TTTClient {
 
         System.out.println("CLIENT is attempting connection....");
         try {
-            toserversocket = new Socket("localhost", 4030);
+            toserversocket = new Socket("localhost", 7788);
             System.out.println("CONNECTION HAS BEEN MADE");
         }
         catch (IOException  e) {};

@@ -16,7 +16,7 @@ public class TTTServer {
 
         try {    // NOTE - must be within a try-clause or throw exceptions!!!!
 
-            server = new ServerSocket(4030);   //listen at the door
+            server = new ServerSocket(7788);   //listen at the door
             System.out.println("waiting for connection");
             toclientsocket = server.accept();   // block UNTIL request received
 
