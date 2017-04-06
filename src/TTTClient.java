@@ -26,13 +26,16 @@ class TTTClient {
             PrintStream out = new PrintStream(toserversocket.getOutputStream());
 
             String response = in.readLine();
+
             if(!response.equals("NONE")) {
                 String[] rA = response.split(" ");
                 int rm = Integer.valueOf(rA[1]);
                 int cm = Integer.valueOf(rA[2]);
                 update(rm, cm, 'X');
             }
+
             out.println(move());
+
             while (true) {
                 response = in.readLine();
                 String[] rA = response.split(" ");
@@ -57,7 +60,7 @@ class TTTClient {
                             System.out.println("You win!");
                             System.exit(0);
                     }
-                }else{ //game didnt server turn
+                } else{ //game didnt server turn
                     update(rm, cm, 'X');
                     out.println(move());
                 }
@@ -91,7 +94,7 @@ class TTTClient {
             System.out.println("Column");
             String cS = sc.next();
             System.out.println(cS);
-            Pattern pR = Pattern.compile("[0-2]+"); //regex magic to check input
+            Pattern pR = Pattern.compile("[0-2]"); //regex magic to check input
             if (!pR.matcher(rS).matches() || !pR.matcher(cS).matches()) {
                 //if input wrong throw arg
                 System.out.println("One of your inputs was incorrect.");
